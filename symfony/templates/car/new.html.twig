@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ form.vars.value.id ? 'Edit' : 'Create' }} Car{% endblock %}
+{% block body %}
+    <h1>{{ form.vars.value.id ? 'Edit' : 'Create' }} Car</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.model) }}
+        {{ form_row(form.year) }}
+        {{ form_row(form.color) }}
+        {{ form_row(form.carCategory) }}
+        {{ form_row(form.save) }}
+    {{ form_end(form) }}
+
+    <a href="{{ path('car_index') }}">Back to list</a>
+{% endblock %}

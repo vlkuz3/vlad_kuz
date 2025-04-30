@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}Rentals{% endblock %}
+{% block body %}
+    <h1>Rental List</h1>
+    <a href="{{ path('rental_new') }}">Create New Rental</a>
+    <ul>
+        {% for rental in rentals %}
+            <li>
+                {{ rental.customer.name }} - {{ rental.car.model }} ({{ rental.startDate|date('Y-m-d') }} to {{ rental.endDate|date('Y-m-d') }})
+                [<a href="{{ path('rental_edit', {'id': rental.id}) }}">edit</a>]
+                [<a href="{{ path('rental_delete', {'id': rental.id}) }}">delete</a>]
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

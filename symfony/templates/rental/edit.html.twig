@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ form.vars.value.id ? 'Edit' : 'Create' }} Rental{% endblock %}
+{% block body %}
+    <h1>{{ form.vars.value.id ? 'Edit' : 'Create' }} Rental</h1>
+    {{ form_start(form) }}
+        {{ form_row(form.car) }}
+        {{ form_row(form.customer) }}
+        {{ form_row(form.startDate) }}
+        {{ form_row(form.endDate) }}
+        {{ form_row(form.save) }}
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}Payments{% endblock %}
+{% block body %}
+    <h1>Payment List</h1>
+    <a href="{{ path('payment_new') }}">Create New Payment</a>
+    <ul>
+        {% for payment in payments %}
+            <li>
+                Rental #{{ payment.rental.id }} — {{ payment.amount }} грн ({{ payment.paymentDate|date('Y-m-d') }})
+                [<a href="{{ path('payment_edit', {'id': payment.id}) }}">edit</a>]
+                [<a href="{{ path('payment_delete', {'id': payment.id}) }}">delete</a>]
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
