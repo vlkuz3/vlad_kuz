@@ -6,6 +6,7 @@ use App\Entity\Rental;
 use App\Form\RentalTypeForm;
 use App\Repository\RentalRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,15 +14,32 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RentalController extends AbstractController
 {
-    #[Route('/rental', name: 'rental_index')]
-    public function index(RentalRepository $rentalRepository): Response
-    {
+    #[Route('car/rental', name: 'rental_index')]
+    public function index(
+        Request $request,
+        RentalRepository $rentalRepository,
+        PaginatorInterface $paginator
+    ): Response {
+        $filters = $request->query->all();
+
+        $queryBuilder = $rentalRepository->filter($filters);
+
+        $itemsPerPage = $request->query->getInt('itemsPerPage', 5);
+        $page = $request->query->getInt('page', 1);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            $itemsPerPage
+        );
+
         return $this->render('rental/index.html.twig', [
-            'rentals' => $rentalRepository->findAll(),
+            'rentals' => $pagination,
+            'filters' => $filters,
         ]);
     }
 
-    #[Route('/rental/new', name: 'rental_new')]
+    #[Route('car/rental/new', name: 'rental_new')]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $rental = new Rental();
@@ -40,7 +58,7 @@ final class RentalController extends AbstractController
         ]);
     }
 
-    #[Route('/rental/{id}/edit', name: 'rental_edit')]
+    #[Route('car/rental/{id}/edit', name: 'rental_edit')]
     public function edit(Request $request, Rental $rental, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(RentalTypeForm::class, $rental);
@@ -58,7 +76,7 @@ final class RentalController extends AbstractController
         ]);
     }
 
-    #[Route('/rental/{id}/delete', name: 'rental_delete')]
+    #[Route('car/rental/{id}/delete', name: 'rental_delete')]
     public function delete(Rental $rental, EntityManagerInterface $em): Response
     {
         $em->remove($rental);

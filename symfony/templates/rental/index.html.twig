@@ -1,15 +1,69 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}Rentals{% endblock %}
+
 {% block body %}
     <h1>Rental List</h1>
-    <a href="{{ path('rental_new') }}">Create New Rental</a>
-    <ul>
+
+    <form method="get">
+        <div>
+            <label for="customer">Customer</label>
+            <input type="text" name="customer" value="{{ filters.customer ?? '' }}" placeholder="Search by customer">
+
+            <label for="car">Car</label>
+            <input type="text" name="car" value="{{ filters.car ?? '' }}" placeholder="Search by car">
+
+            <label for="startDate">Search by start date</label>    
+            <input type="date" name="startDate" value="{{ filters.startDate ?? '' }}" placeholder="Search by start date">
+            
+            <select name="itemsPerPage">
+                {% for size in [5, 10, 15, 20] %}
+                    <option value="{{ size }}"
+                        {{ filters.itemsPerPage is defined and filters.itemsPerPage == size ? 'selected' : '' }}>
+                        {{ size }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Apply</button>
+        </div>
+    </form>
+
+    <a href="{{ path('rental_index') }}">Reset Filters</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Car</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for rental in rentals %}
-            <li>
-                {{ rental.customer.name }} - {{ rental.car.model }} ({{ rental.startDate|date('Y-m-d') }} to {{ rental.endDate|date('Y-m-d') }})
-                [<a href="{{ path('rental_edit', {'id': rental.id}) }}">edit</a>]
-                [<a href="{{ path('rental_delete', {'id': rental.id}) }}">delete</a>]
-            </li>
+            <tr>
+                <td>{{ rental.customer.name }}</td>
+                <td>{{ rental.car.model }}</td>
+                <td>{{ rental.startDate|date('Y-m-d') }}</td>
+                <td>{{ rental.endDate|date('Y-m-d') }}</td>
+                <td>
+                    <a href="{{ path('rental_edit', {'id': rental.id}) }}">Edit</a>
+                    <a href="{{ path('rental_delete', {'id': rental.id}) }}">Delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No records found</td>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
+
+    <div>
+        {{ knp_pagination_render(rentals) }}
+    </div>
+
+    <a href="{{ path('rental_new') }}">Create New Rental</a>
 {% endblock %}

@@ -12,10 +12,24 @@ class RentalController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $rentals = Rental::with('car', 'customer')->get();
-        return view('rentals.index', compact('rentals'));
+        // $rentals = Rental::with('car', 'customer')->get();
+        // return view('rentals.index', compact('rentals'));
+
+        $request->only([
+            'car_id',
+            'customer_id',
+            'start_date',
+            'end_date',
+            'total_price',
+        ]);
+
+        $itemsPerPage = $request->input('itemsPerPage', 10);
+        $rentals = Rental::filter($request)->paginate($itemsPerPage)->appends($request->query());
+        $cars = Car::all();
+        $customers = Customer::all();
+        return view('rentals.index', compact('rentals', 'cars', 'customers'));
     }
 
     /**

@@ -11,10 +11,25 @@ class CarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cars = Car::all();
-        return view('cars.index', compact('cars'));
+        // $cars = Car::all();
+        // return view('cars.index', compact('cars'));
+        $request->only([
+            'brand',
+            'model',
+            'color',
+            'year',
+            'category_id',
+            'price_per_day',
+            'is_available'
+        ]);
+
+        $itemsPerPage = $request->input('itemsPerPage', 10);
+
+        $cars = Car::filter($request)->paginate($itemsPerPage)->appends($request->query());
+        $categories = CarCategory::all();
+        return view('cars.index', compact('cars', 'categories'));
     }
 
     /**

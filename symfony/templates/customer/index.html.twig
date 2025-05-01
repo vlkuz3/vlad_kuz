@@ -1,15 +1,61 @@
 {% extends 'base.html.twig' %}
+
 {% block title %}Customers{% endblock %}
+
 {% block body %}
     <h1>Customer List</h1>
-    <a href="{{ path('customer_new') }}">Create New Customer</a>
-    <ul>
+
+    <form method="get" class="mb-3">
+        <div class="d-flex">
+            <input type="text" name="name" value="{{ filters.name ?? '' }}" placeholder="Search by name" class="form-control me-2">
+            <input type="text" name="email" value="{{ filters.email ?? '' }}" placeholder="Search by email" class="form-control me-2">
+            <select name="itemsPerPage" class="form-select me-2">
+                {% for size in [5, 10, 15, 20] %}
+                    <option value="{{ size }}"
+                        {{ filters.itemsPerPage is defined and filters.itemsPerPage == size ? 'selected' : '' }}>
+                        {{ size }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+    </form>
+
+    <a href="{{ path('customer_index') }}">Reset Filters</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for customer in customers %}
-            <li>
-                {{ customer.name }} — {{ customer.email }}
-                [<a href="{{ path('customer_edit', {'id': customer.id}) }}">edit</a>]
-                [<a href="{{ path('customer_delete', {'id': customer.id}) }}">delete</a>]
-            </li>
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>
+                    <a href="{{ path('customer_edit', {'id': customer.id}) }}">Edit</a>
+                    <a href="{{ path('customer_delete', {'id': customer.id}) }}">Delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No records found</td>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(customers) }}
+    </div>
+
+    <a href="{{ path('customer_new') }}">Create New Customer</a>
 {% endblock %}

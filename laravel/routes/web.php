@@ -29,12 +29,19 @@ Route::get('/car/{car}/edit', [CarController::class, 'edit'])->name('car.edit');
 Route::put('/car/{car}', [CarController::class, 'update'])->name('car.update');
 Route::delete('/car/{car}', [CarController::class, 'destroy'])->name('car.destroy');
 
-Route::get('/customer/all', [CustomerController::class, 'index'])->name('customers.index');
-Route::get('/customer/create', [CustomerController::class, 'create'])->name('customers.create');
-Route::post('/customer', [CustomerController::class, 'store'])->name('customers.store');
-Route::get('/customer/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
-Route::put('/customer/{customer}', [CustomerController::class, 'update'])->name('customers.update');
-Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+Route::get('car/category/all', [CarCategoryController::class, 'index'])->name('categories.index');
+Route::get('car/category/create', [CarCategoryController::class, 'create'])->name('categories.create');
+Route::post('car/category', [CarCategoryController::class, 'store'])->name('categories.store');
+Route::get('car/category/{category}/edit', [CarCategoryController::class, 'edit'])->name('categories.edit');
+Route::put('car/category/{category}', [CarCategoryController::class, 'update'])->name('categories.update');
+Route::delete('car/category/{category}', [CarCategoryController::class, 'destroy'])->name('categories.destroy');
+
+Route::get('car/customer/all', [CustomerController::class, 'index'])->name('customers.index');
+Route::get('car/customer/create', [CustomerController::class, 'create'])->name('customers.create');
+Route::post('car/customer', [CustomerController::class, 'store'])->name('customers.store');
+Route::get('car/customer/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+Route::put('car/customer/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+Route::delete('car/customer/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
 Route::delete('/rental/{rental}', [RentalController::class, 'destroy'])->name('rentals.destroy');
 Route::get('/rental/all', [RentalController::class, 'index'])->name('rentals.index');
@@ -50,10 +57,3 @@ Route::post('/payment', [PaymentController::class, 'store'])->name('payments.sto
 Route::get('/payment/{payment}/edit', [PaymentController::class, 'edit'])->name('payments.edit');
 Route::put('/payment/{payment}', [PaymentController::class, 'update'])->name('payments.update');
 Route::delete('/payment/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
-
-Route::get('/category/all', [CarCategoryController::class, 'index'])->name('categories.index');
-Route::get('/category/create', [CarCategoryController::class, 'create'])->name('categories.create');
-Route::post('/category', [CarCategoryController::class, 'store'])->name('categories.store');
-Route::get('/category/{category}/edit', [CarCategoryController::class, 'edit'])->name('categories.edit');
-Route::put('/category/{category}', [CarCategoryController::class, 'update'])->name('categories.update');
-Route::delete('/category/{category}', [CarCategoryController::class, 'destroy'])->name('categories.destroy');

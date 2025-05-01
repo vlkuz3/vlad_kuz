@@ -10,9 +10,19 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::all();
+        // $customers = Customer::all();
+        // return view('customers.index', compact('customers'));
+
+        $request->only([
+            'name',
+            'email',
+            'phone',
+        ]);
+
+        $itemsPerPage = $request->input('itemsPerPage', 10);
+        $customers = Customer::filter($request)->paginate($itemsPerPage)->appends($request->query());
         return view('customers.index', compact('customers'));
     }
 

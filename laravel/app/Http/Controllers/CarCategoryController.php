@@ -10,9 +10,17 @@ class CarCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = CarCategory::all();
+        // $categories = CarCategory::all();
+        // return view('categories.index', compact('categories'));
+        $request->only([
+            'name',
+        ]);
+
+        $itemsPerPage = $request->input('itemsPerPage', 10);
+
+        $categories = CarCategory::filter($request)->paginate($itemsPerPage)->appends($request->query());
         return view('categories.index', compact('categories'));
     }
 

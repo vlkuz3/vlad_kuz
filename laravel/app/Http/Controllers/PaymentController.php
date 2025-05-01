@@ -11,10 +11,23 @@ class PaymentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $payments = Payment::with('rental')->get();
-        return view('payments.index', compact('payments'));
+        // $payments = Payment::with('rental')->get();
+        // return view('payments.index', compact('payments'));
+
+        $request->only([
+            'rental_id',
+            'amount',
+            'status',
+            'payment_date',
+        ]);
+
+        $itemsPerPage = $request->input('itemsPerPage', 10);
+
+        $payments = Payment::filter($request)->paginate($itemsPerPage)->appends($request->query());
+        $rentals = Rental::all();
+        return view('payments.index', compact('payments', 'rentals'));
     }
 
     public function create()

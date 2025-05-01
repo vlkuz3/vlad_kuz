@@ -1,16 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}CarCategory index{% endblock %}
+{% block title %}Car Categories{% endblock %}
 
 {% block body %}
-    <h1>CarCategory index</h1>
+    <h1>Car Categories</h1>
+
+    <form method="get" class="mb-3">
+        <div class="d-flex">
+            <input type="text" name="name" value="{{ filters.name ?? '' }}" placeholder="Search by name" class="form-control me-2">
+            <select name="itemsPerPage" class="form-select me-2">
+                {% for size in [5, 10, 15, 20] %}
+                    <option value="{{ size }}"
+                        {{ filters.itemsPerPage is defined and filters.itemsPerPage == size ? 'selected' : '' }}>
+                        {{ size }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </div>
+    </form>
+
+    <a href="{{ path('app_car_category_index') }}">Reset Filters</a>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Name</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,17 +36,21 @@
                 <td>{{ car_category.id }}</td>
                 <td>{{ car_category.name }}</td>
                 <td>
-                    <a href="{{ path('app_car_category_show', {'id': car_category.id}) }}">show</a>
-                    <a href="{{ path('app_car_category_edit', {'id': car_category.id}) }}">edit</a>
+                    <a href="{{ path('app_car_category_show', {'id': car_category.id}) }}">Show</a>
+                    <a href="{{ path('app_car_category_edit', {'id': car_category.id}) }}">Edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+                <td colspan="3">No records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(car_categories) }}
+    </div>
 
     <a href="{{ path('app_car_category_new') }}">Create new</a>
 {% endblock %}

@@ -10,15 +10,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/car/category')]
 final class CarCategoryController extends AbstractController
 {
     #[Route(name: 'app_car_category_index', methods: ['GET'])]
-    public function index(CarCategoryRepository $carCategoryRepository): Response
-    {
+    public function index(
+        Request $request,
+        CarCategoryRepository $carCategoryRepository,
+        PaginatorInterface $paginator
+    ): Response {
+        $filters = $request->query->all();
+
+        $queryBuilder = $carCategoryRepository->filter($filters);
+
+        $itemsPerPage = $request->query->getInt('itemsPerPage', 5);
+        $page = $request->query->getInt('page', 1);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            $itemsPerPage
+        );
+
         return $this->render('car_category/index.html.twig', [
-            'car_categories' => $carCategoryRepository->findAll(),
+            'car_categories' => $pagination,
+            'filters' => $filters,
         ]);
     }
 

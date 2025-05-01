@@ -16,6 +16,36 @@ class CarRepository extends ServiceEntityRepository
         parent::__construct($registry, Car::class);
     }
 
+    public function filter(array $filters): \Doctrine\ORM\QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->leftJoin('c.carCategory', 'cat')
+            ->addSelect('cat');
+
+        if (!empty($filters['model'])) {
+            $qb->andWhere('c.model LIKE :model')
+                ->setParameter('model', '%' . $filters['model'] . '%');
+        }
+
+        if (!empty($filters['color'])) {
+            $qb->andWhere('c.color LIKE :color')
+                ->setParameter('color', '%' . $filters['color'] . '%');
+        }
+
+        if (!empty($filters['year'])) {
+            $qb->andWhere('c.year = :year')
+                ->setParameter('year', $filters['year']);
+        }
+
+        if (!empty($filters['carCategory'])) {
+            $qb->andWhere('cat.id = :category')
+                ->setParameter('category', $filters['carCategory']);
+        }
+
+        return $qb;
+    }
+
+
     //    /**
     //     * @return Car[] Returns an array of Car objects
     //     */

@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Car;
+use App\Entity\CarCategory;
 use App\Form\CarTypeForm;
 use App\Repository\CarRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +16,25 @@ use Symfony\Component\Routing\Attribute\Route;
 final class CarController extends AbstractController
 {
     #[Route('/car', name: 'car_index')]
-    public function index(CarRepository $carRepository): Response
+    public function index(Request $request, CarRepository $carRepository, EntityManagerInterface $em, PaginatorInterface $paginator): Response
     {
+        $filters = $request->query->all();
+        $queryBuilder = $carRepository->filter($filters);
+        $itemsPerPage = $request->query->getInt('itemsPerPage', 5);
+        $page = $request->query->getInt('page', 1);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            $itemsPerPage
+        );
+
+        $carCategories = $em->getRepository(CarCategory::class)->findAll();
+
         return $this->render('car/index.html.twig', [
-            'cars' => $carRepository->findAll(),
+            'cars' => $pagination,
+            'filters' => $filters,
+            'carCategories' => $carCategories,
         ]);
     }
 

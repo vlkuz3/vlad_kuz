@@ -8,7 +8,7 @@
 
             <div class="mb-3">
                 <label for="rental_id">Rental</label>
-                <select name="rental_id" required>
+                <select name="rental_id" class="form-control" required>
                     @foreach($rentals as $rental)
                         <option value="{{ $rental->id }}">
                             Rental #{{ $rental->id }} - {{ $rental->car->brand }} {{ $rental->car->model }}
@@ -19,12 +19,12 @@
 
             <div class="mb-3">
                 <label for="amount">Amount</label>
-                <input type="number" name="amount" step="0.01" required>
+                <input type="number" name="amount" step="1" class="form-control" required>
             </div>
 
             <div class="mb-3">
                 <label for="status">Status</label>
-                <select name="status" required>
+                <select name="status" required class="form-control">
                     <option value="paid">Paid</option>
                     <option value="unpaid">Unpaid</option>
                     <option value="pending">Pending</option>
@@ -33,7 +33,7 @@
 
             <div class="mb-3">
                 <label for="payment_date">Payment Date</label>
-                <input type="date" name="payment_date" required>
+                <input type="date" name="payment_date" class="form-control" required>
             </div>
 
             <button type="submit" class="btn btn-success">Create Payment</button>

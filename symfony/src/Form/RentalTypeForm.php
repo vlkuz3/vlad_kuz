@@ -7,7 +7,7 @@ use App\Entity\Customer;
 use App\Entity\Rental;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,11 +27,15 @@ class RentalTypeForm extends AbstractType
                 'label' => 'Customer',
                 'choice_label' => 'name',
             ])
-            ->add('startDate', DateTimeType::class, [
+            ->add('startDate', DateType::class, [
                 'label' => 'Start Date',
+                'widget' => 'single_text',
+                'html5' => true,
             ])
-            ->add('endDate', DateTimeType::class, [
+            ->add('endDate', DateType::class, [
                 'label' => 'End Date',
+                'widget' => 'single_text',
+                'html5' => true,
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Save Rental',

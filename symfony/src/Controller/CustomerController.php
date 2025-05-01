@@ -10,18 +10,36 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 final class CustomerController extends AbstractController
 {
-    #[Route('/customer', name: 'customer_index')]
-    public function index(CustomerRepository $customerRepository): Response
-    {
+    #[Route('car/customer', name: 'customer_index')]
+    public function index(
+        Request $request,
+        CustomerRepository $customerRepository,
+        PaginatorInterface $paginator
+    ): Response {
+        $filters = $request->query->all();
+
+        $queryBuilder = $customerRepository->filter($filters);
+
+        $itemsPerPage = $request->query->getInt('itemsPerPage', 5);
+        $page = $request->query->getInt('page', 1);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            $itemsPerPage
+        );
+
         return $this->render('customer/index.html.twig', [
-            'customers' => $customerRepository->findAll(),
+            'customers' => $pagination,
+            'filters' => $filters,
         ]);
     }
 
-    #[Route('/customer/new', name: 'customer_new')]
+    #[Route('car/customer/new', name: 'customer_new')]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $customer = new Customer();
@@ -40,7 +58,7 @@ final class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}/edit', name: 'customer_edit')]
+    #[Route('car/customer/{id}/edit', name: 'customer_edit')]
     public function edit(Request $request, Customer $customer, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(CustomerTypeForm::class, $customer);
@@ -58,7 +76,7 @@ final class CustomerController extends AbstractController
         ]);
     }
 
-    #[Route('/customer/{id}/delete', name: 'customer_delete')]
+    #[Route('car/customer/{id}/delete', name: 'customer_delete')]
     public function delete(Customer $customer, EntityManagerInterface $em): Response
     {
         $em->remove($customer);
